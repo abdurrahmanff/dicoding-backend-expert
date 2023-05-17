@@ -9,6 +9,8 @@ const MathBasic = {
     if (typeof a !== 'number' || typeof b !== 'number') {
       throw new Error('Add function only receive number as parameters');
     }
+
+    return a + b;
   },
   subtract: () => {
 
