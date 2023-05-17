@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll --coverage"
   },
   "devDependencies": {
     "eslint": "^7.32.0 || ^8.2.0",
