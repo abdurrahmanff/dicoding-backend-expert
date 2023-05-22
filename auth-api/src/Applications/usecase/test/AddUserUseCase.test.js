@@ -29,13 +29,13 @@ describe('AddUser use case', () => {
       .mockImplementation(() => Promise.resolve(mockRegisteredUser));
 
     const getUserUseCase = new AddUserUseCase({
-      UserRepository: mockUserRepository,
+      userRepository: mockUserRepository,
       passwordHash: mockPasswordHash,
     });
 
     const registeredUser = await getUserUseCase.execute(useCasePayload);
 
-    expect(registeredUser).toStrictEqual(new RegisterUser({
+    expect(registeredUser).toStrictEqual(new RegisteredUser({
       id: 'user-123',
       username: useCasePayload.username,
       fullname: useCasePayload.fullname,
