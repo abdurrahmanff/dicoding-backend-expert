@@ -13,7 +13,6 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "class-methods-use-this": "off",
-        "linebreak-style": ["error", "windows", "unix"]
+        "class-methods-use-this": "off"
     }
 }
