@@ -5,7 +5,7 @@ exports.shorthands = undefined;
 exports.up = (pgm) => {
   pgm.createTable('threads', {
     id: {
-      type: 'VARHCHAR(50)',
+      type: 'VARCHAR(50)',
       primaryKey: true,
     },
     title: {
