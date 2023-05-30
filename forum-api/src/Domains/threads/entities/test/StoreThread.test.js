@@ -1,8 +1,19 @@
 const StoreThread = require('../StoreThread');
 
 describe('first', () => {
+  it('should throw error when title length is more than 50', () => {
+    const payload = {
+      id: 'thread-123',
+      title: 'Super Long Title Thread Bruh Who Make Title This long OOOMAAAGAAAAOOOMAAAGAAAAOOOMAAAGAAAAOOOMAAAGAAAAOOOMAAAGAAAAOOOMAAAGAAAA',
+      body: 'this is thread body',
+      owner: 'user-123',
+    };
+
+    expect(() => new StoreThread(payload)).toThrowError('STORE_THREAD.TITLE_LIMIT_CHAR');
+  });
   it('should create Thread object correctly', () => {
     const payload = {
+      id: 'thread-123',
       title: 'Thread Title',
       body: 'this is thread body xddwalk',
       owner: 'user-123',
@@ -10,6 +21,7 @@ describe('first', () => {
 
     const storeThread = new StoreThread(payload);
 
+    expect(storeThread.id).toEqual(payload.id);
     expect(storeThread.title).toEqual(payload.title);
     expect(storeThread.body).toEqual(payload.body);
     expect(storeThread.owner).toEqual(payload.owner);
