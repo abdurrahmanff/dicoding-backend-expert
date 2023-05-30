@@ -38,9 +38,6 @@ container.register([
         {
           concrete: pool,
         },
-        {
-          concrete: nanoid,
-        },
       ],
     },
   },
@@ -94,6 +91,10 @@ container.register([
         {
           name: 'passwordHash',
           internal: PasswordHash.name,
+        },
+        {
+          name: 'idGenerator',
+          concrete: nanoid,
         },
       ],
     },

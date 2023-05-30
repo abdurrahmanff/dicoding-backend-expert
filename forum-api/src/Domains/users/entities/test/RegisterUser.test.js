@@ -51,15 +51,19 @@ describe('a RegisterUser entities', () => {
   it('should create registerUser object correctly', () => {
     // Arrange
     const payload = {
+      id: 'user-123',
       username: 'dicoding',
       fullname: 'Dicoding Indonesia',
       password: 'abc',
     };
 
     // Action
-    const { username, fullname, password } = new RegisterUser(payload);
+    const {
+      id, username, fullname, password,
+    } = new RegisterUser(payload);
 
     // Assert
+    expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(fullname).toEqual(payload.fullname);
     expect(password).toEqual(payload.password);

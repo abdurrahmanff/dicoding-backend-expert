@@ -25,6 +25,7 @@ describe('AddUserUseCase', () => {
     /** creating dependency of use case */
     const mockUserRepository = new UserRepository();
     const mockPasswordHash = new PasswordHash();
+    const mockIdGenerator = () => '123';
 
     /** mocking needed function */
     mockUserRepository.verifyAvailableUsername = jest.fn()
@@ -38,6 +39,7 @@ describe('AddUserUseCase', () => {
     const getUserUseCase = new AddUserUseCase({
       userRepository: mockUserRepository,
       passwordHash: mockPasswordHash,
+      idGenerator: mockIdGenerator,
     });
 
     // Action
@@ -53,6 +55,7 @@ describe('AddUserUseCase', () => {
     expect(mockUserRepository.verifyAvailableUsername).toBeCalledWith(useCasePayload.username);
     expect(mockPasswordHash.hash).toBeCalledWith(useCasePayload.password);
     expect(mockUserRepository.addUser).toBeCalledWith(new RegisterUser({
+      id: 'user-123',
       username: useCasePayload.username,
       password: 'encrypted_password',
       fullname: useCasePayload.fullname,
