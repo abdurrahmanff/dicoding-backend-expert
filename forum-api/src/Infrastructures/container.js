@@ -14,6 +14,8 @@ const UserRepository = require('../Domains/users/UserRepository');
 const PasswordHash = require('../Applications/security/PasswordHash');
 const UserRepositoryPostgres = require('./repository/UserRepositoryPostgres');
 const BcryptPasswordHash = require('./security/BcryptPasswordHash');
+const ThreadRepository = require('../Domains/threads/ThreadRepository');
+const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres');
 
 // use case
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase');
@@ -33,6 +35,17 @@ container.register([
   {
     key: UserRepository.name,
     Class: UserRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+      ],
+    },
+  },
+  {
+    key: ThreadRepository.name,
+    Class: ThreadRepositoryPostgres,
     parameter: {
       dependencies: [
         {
