@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const ThreadsTableTestHelper = {
@@ -13,7 +14,7 @@ const ThreadsTableTestHelper = {
       values: [id, title, body, date, userId],
     };
 
-    await this.pool.query(query);
+    await pool.query(query);
   },
   async findThreadById(id) {
     const query = {
@@ -21,7 +22,7 @@ const ThreadsTableTestHelper = {
       values: [id],
     };
 
-    const result = await this.pool.query(query);
+    const result = await pool.query(query);
     return result.rows;
   },
   async cleanTable() {
