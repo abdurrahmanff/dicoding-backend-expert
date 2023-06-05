@@ -5,5 +5,6 @@ describe('CommentRepository test', () => {
     const commentRepository = new CommentRepository();
 
     await expect(() => commentRepository.addComment({})).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(() => commentRepository.verifyUserComment({})).rejects.toThrowError('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });
