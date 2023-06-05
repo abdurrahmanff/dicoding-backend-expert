@@ -1,4 +1,5 @@
 const InvariantError = require('./InvariantError');
+const NotFoundError = require('./NotFoundError');
 
 const DomainErrorTranslator = {
   translate(error) {
@@ -18,6 +19,9 @@ const DomainErrorTranslator = {
     'DELETE_AUTHENTICATION_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('refresh token harus string'),
     'ADD_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('tidak dapat menambahkan thread, properti yang dibutuhkan tidak ada'),
     'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan thread, tipe data tidak sesuai'),
+    'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTIES': new InvariantError('tidak dapat menambahkan komentar, properti yang dibutuhkan tidak ada '),
+    'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan komentar, tipe data tidak sesuai'),
+    'THREAD.NOT_FOUND': new NotFoundError('thread tidak ditemukan'),
   },
 };
 
