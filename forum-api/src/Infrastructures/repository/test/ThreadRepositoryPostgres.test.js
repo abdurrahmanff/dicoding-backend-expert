@@ -54,4 +54,19 @@ describe('ThreadRepository postgres implementation test', () => {
       }));
     });
   });
+
+  describe('verifyyThreadExist function', () => {
+    it('should throw error when thread not exist', async () => {
+      const threadId = 'thread-133';
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
+
+      await expect(threadRepositoryPostgres.verifyThreadExist(threadId))
+        .rejects
+        .toThrowError('THREAD.NOT_FOUND');
+    });
+  });
 });
