@@ -6,6 +6,7 @@ exports.up = (pgm) => {
   pgm.addColumn('comments', {
     deleted: {
       type: 'boolean',
+      default: 'FALSE',
     },
   });
 
