@@ -66,7 +66,7 @@ describe('ThreadRepository postgres implementation test', () => {
 
       await expect(threadRepositoryPostgres.verifyThreadExist(threadId))
         .rejects
-        .toThrowError('THREAD.NOT_FOUND');
+        .toThrowError('thread tidak ditemukan');
     });
   });
 });
