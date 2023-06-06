@@ -44,7 +44,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     await this.verifyThreadExist(id);
 
     const query = {
-      text: `SELECT t.id, t.title, t.body, t.date, ut.username AS t_user, c.id AS c_id, uc.username AS c_user, c.date AS c_date, c.content
+      text: `SELECT t.id, t.title, t.body, t.date, ut.username AS t_user, c.id AS c_id, uc.username AS c_user, c.date AS c_date, c.content, c.deleted
       FROM threads AS t
       JOIN users AS ut ON t.user_id = ut.id
       LEFT JOIN comments AS c ON t.id = c.thread_id
@@ -55,14 +55,11 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const result = await this.pool.query(query);
 
-    // if (result) {
-    //   throw new Error(JSON.stringify(result.rows));
-    // }
     const comments = result.rows.map((row) => new DetailComment({
       id: row.c_id,
       username: row.c_user,
       date: row.c_date,
-      content: row.content,
+      content: row.deleted ? '**komentar telah dihapus**' : row.content,
     }));
 
     const detailThread = new DetailThread({
