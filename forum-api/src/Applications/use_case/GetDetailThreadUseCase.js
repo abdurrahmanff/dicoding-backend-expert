@@ -1,4 +1,4 @@
-class GetDetailThread {
+class GetDetailThreadUseCase {
   constructor({ threadRepository }) {
     this.threadRepository = threadRepository;
   }
@@ -26,4 +26,4 @@ class GetDetailThread {
   }
 }
 
-module.exports = GetDetailThread;
+module.exports = GetDetailThreadUseCase;
