@@ -49,7 +49,9 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       JOIN users AS ut ON t.user_id = ut.id
       LEFT JOIN comments AS c ON t.id = c.thread_id
       JOIN users AS uc ON c.user_id = uc.id 
-      WHERE t.id = $1`,
+      WHERE t.id = $1
+      GROUP BY c_date, t.id, t_user, c_id, c_user
+      ORDER BY c_date ASC`,
       values: [id],
     };
 
