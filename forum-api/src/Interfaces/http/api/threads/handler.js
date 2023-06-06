@@ -2,6 +2,7 @@ const autoBind = require('auto-bind');
 const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUseCase');
 const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentUseCase');
 const DeleteCommentUseCase = require('../../../../Applications/use_case/DeleteCommentUseCase');
+const GetDetailThreadUseCase = require('../../../../Applications/use_case/GetDetailThreadUseCase');
 
 class ThreadsHandler {
   constructor(container) {
@@ -55,6 +56,21 @@ class ThreadsHandler {
 
     return {
       status: 'success',
+    };
+  }
+
+  async getThreadById(request) {
+    const getDetailThreadUseCase = this.container.getInstance(GetDetailThreadUseCase.name);
+
+    const { threadId } = request.params;
+
+    const thread = await getDetailThreadUseCase.execute({ threadId });
+
+    return {
+      status: 'success',
+      data: {
+        thread,
+      },
     };
   }
 }
