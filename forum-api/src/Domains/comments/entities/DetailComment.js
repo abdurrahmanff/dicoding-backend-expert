@@ -6,9 +6,7 @@ class DetailComment {
     this.username = username;
     this.date = date;
     this.content = content;
-    if (replies && replies.length > 0) {
-      this.replies = replies;
-    }
+    this.replies = replies;
   }
 }
 
