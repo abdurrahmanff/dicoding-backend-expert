@@ -58,6 +58,22 @@ class CommentRepositoryPostgres extends CommentRepository {
 
     await this.pool.query(query);
   }
+
+  async replyComment(parentId, storeComment) {
+    const {
+      id, content, threadId, userId,
+    } = storeComment;
+    const date = new Date().toISOString();
+
+    const query = {
+      text: 'INSERT INTO comments VALUES ($1, $2, $3, $4, $5, FALSE, $6) RETURNING id, content, user_id AS owner',
+      values: [id, content, threadId, userId, date, parentId],
+    };
+
+    const result = await this.pool.query(query);
+
+    return result.rows[0];
+  }
 }
 
 module.exports = CommentRepositoryPostgres;

@@ -80,4 +80,30 @@ describe('ComnmentRepository Postgress implementation', () => {
       expect(comment[0].deleted).toBeTruthy();
     });
   });
+
+  describe('replyComment function', () => {
+    it('should store replied comment to db properly', async () => {
+      const parentId = 'comment-123';
+
+      const storeComment = new StoreComment({
+        id: 'reply-123',
+        content: 'this is comment',
+        threadId: 'thread-123',
+        userId: 'user-123',
+      });
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'user A' });
+      await UsersTableTestHelper.addUser({ id: 'user-124', username: 'user B' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool);
+
+      await commentRepositoryPostgres.replyComment(parentId, storeComment);
+
+      const replyComment = await CommentsTableTestHelper.findCommentById(storeComment.id);
+
+      expect(replyComment).toHaveLength(1);
+    });
+  });
 });
