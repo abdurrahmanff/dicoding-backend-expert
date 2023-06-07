@@ -20,6 +20,8 @@ const DomainErrorTranslator = {
     'ADD_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan thread, tipe data tidak sesuai'),
     'ADD_COMMENT.NOT_CONTAIN_NEEDED_PROPERTIES': new InvariantError('tidak dapat menambahkan komentar, properti yang dibutuhkan tidak ada '),
     'ADD_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan komentar, tipe data tidak sesuai'),
+    'REPLY_COMMENT.NOT_CONTAIN_NEEDED_PROPERTIES': new InvariantError('tidak dapat membalas komentar, properti yang dibutuhkan tidak ada'),
+    'REPLY_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat membalas komentar, tipe data tidak sesuai'),
   },
 };
 
