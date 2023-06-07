@@ -107,12 +107,14 @@ describe('ThreadRepository postgres implementation test', () => {
             username: 'user B',
             date,
             content: 'komentar 1',
+            replies: [],
           }),
           new DetailComment({
             id: 'comment-124',
             username: 'user B',
             date,
             content: 'komentar 2',
+            replies: [],
           }),
         ],
       }));
