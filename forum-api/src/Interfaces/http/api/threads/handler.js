@@ -98,6 +98,19 @@ class ThreadsHandler {
     response.code(201);
     return response;
   }
+
+  async deleteReplyOnCommentById(request) {
+    const deleteCommentuseCase = this.container.getInstance(DeleteCommentUseCase.name);
+
+    const { replyId } = request.params;
+    const { id: userId } = request.auth.credentials;
+
+    await deleteCommentuseCase.execute({ commentId: replyId, userId });
+
+    return {
+      status: 'success',
+    };
+  }
 }
 
 module.exports = ThreadsHandler;
