@@ -44,7 +44,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     await this.verifyThreadExist(id);
 
     const query = {
-      text: `SELECT t.id, t.title, t.body, t.date, ut.username AS t_user, c.id AS c_id, uc.username AS c_user, c.date AS c_date, c.content, c.deleted
+      text: `SELECT t.id, t.title, t.body, t.date, ut.username AS t_user, c.id AS c_id, uc.username AS c_user, c.date AS c_date, c.content, c.deleted, c.parent AS c_parent
       FROM threads AS t
       JOIN users AS ut ON t.user_id = ut.id
       LEFT JOIN comments AS c ON t.id = c.thread_id
@@ -57,21 +57,32 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const result = await this.pool.query(query);
 
-    const comments = result.rows.map((row) => new DetailComment({
-      id: row.c_id,
-      username: row.c_user,
-      date: row.c_date,
-      content: row.deleted ? '**komentar telah dihapus**' : row.content,
-    }));
-
     const detailThread = new DetailThread({
       id: result.rows[0].id,
       title: result.rows[0].title,
       body: result.rows[0].body,
       date: result.rows[0].date,
       username: result.rows[0].t_user,
-      comments,
+      comments: [],
     });
+
+    const buildCommentTree = (parentId) => {
+      const comments = result.rows.filter((row) => row.c_parent === parentId);
+      if (comments.length === 0) return [];
+
+      return comments.map((comment) => new DetailComment({
+        id: comment.c_id,
+        username: comment.c_user,
+        date: comment.c_date,
+        // eslint-disable-next-line no-nested-ternary
+        content: comment.deleted
+          ? parentId ? '**balasan telah dihapus**'
+            : '**komentar telah dihapus**' : comment.content,
+        replies: buildCommentTree(comment.c_id),
+      }));
+    };
+
+    detailThread.comments = buildCommentTree(null);
 
     return detailThread;
   }
