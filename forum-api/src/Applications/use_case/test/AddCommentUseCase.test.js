@@ -35,7 +35,7 @@ describe('AddCommentUseCase test', () => {
     const mockStoredComment = {
       id: 'comment-123',
       content: useCasePayload.content,
-      owner: useCasePayload.owner,
+      owner: useCasePayload.userId,
     };
 
     const mockThreadRepository = new ThreadRepository();
@@ -55,7 +55,11 @@ describe('AddCommentUseCase test', () => {
 
     const storedComment = await addCommentUseCase.execute(useCasePayload);
 
-    await expect(storedComment).toStrictEqual(mockStoredComment);
+    expect(storedComment).toStrictEqual({
+      id: 'comment-123',
+      content: useCasePayload.content,
+      owner: useCasePayload.userId,
+    });
     expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.addComment).toBeCalledWith(new StoreComment({
       id: 'comment-123',
