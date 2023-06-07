@@ -3,6 +3,7 @@ const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUse
 const AddCommentUseCase = require('../../../../Applications/use_case/AddCommentUseCase');
 const DeleteCommentUseCase = require('../../../../Applications/use_case/DeleteCommentUseCase');
 const GetDetailThreadUseCase = require('../../../../Applications/use_case/GetDetailThreadUseCase');
+const ReplyCommentUseCase = require('../../../../Applications/use_case/ReplyCommentUseCase');
 
 class ThreadsHandler {
   constructor(container) {
@@ -72,6 +73,30 @@ class ThreadsHandler {
         thread,
       },
     };
+  }
+
+  async postReplyComment(request, h) {
+    const replyCommentUseCase = this.container.getInstance(ReplyCommentUseCase.name);
+
+    const { threadId, commentId } = request.params;
+
+    const { id: userId } = request.auth.credentials;
+
+    const addedReply = await replyCommentUseCase.execute({
+      threadId,
+      parentId: commentId,
+      ...request.payload,
+      userId,
+    });
+
+    const response = h.response({
+      status: 'success',
+      data: {
+        addedReply,
+      },
+    });
+    response.code(201);
+    return response;
   }
 }
 
