@@ -7,6 +7,7 @@ describe('DetailComment test', () => {
       username: 'username',
       date: 'now',
       content: 'isi komentar',
+      replies: ['a', 'b'],
     };
 
     const detailComment = new DetailComment(payload);
@@ -15,5 +16,6 @@ describe('DetailComment test', () => {
     expect(detailComment.username).toEqual(payload.username);
     expect(detailComment.date).toEqual(payload.date);
     expect(detailComment.content).toEqual(payload.content);
+    expect(detailComment.replies).toEqual(payload.replies);
   });
 });
