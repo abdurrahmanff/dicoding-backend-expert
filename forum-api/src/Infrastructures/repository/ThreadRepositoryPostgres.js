@@ -1,7 +1,6 @@
+const ThreadTransformer = require('../../Applications/transformer/ThreadTransformer');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
-const DetailComment = require('../../Domains/comments/entities/DetailComment');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
-const DetailThread = require('../../Domains/threads/entities/DetailThread');
 const StoreThread = require('../../Domains/threads/entities/StoreThread');
 
 class ThreadRepositoryPostgres extends ThreadRepository {
@@ -57,32 +56,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
     const result = await this.pool.query(query);
 
-    const detailThread = new DetailThread({
-      id: result.rows[0].id,
-      title: result.rows[0].title,
-      body: result.rows[0].body,
-      date: result.rows[0].date,
-      username: result.rows[0].t_user,
-      comments: [],
-    });
-
-    const buildCommentTree = (parentId) => {
-      const comments = result.rows.filter((row) => row.c_parent === parentId);
-      if (comments.length === 0) return [];
-
-      return comments.map((comment) => new DetailComment({
-        id: comment.c_id,
-        username: comment.c_user,
-        date: comment.c_date,
-        // eslint-disable-next-line no-nested-ternary
-        content: comment.deleted
-          ? parentId ? '**balasan telah dihapus**'
-            : '**komentar telah dihapus**' : comment.content,
-        replies: buildCommentTree(comment.c_id),
-      }));
-    };
-
-    detailThread.comments = buildCommentTree(null);
+    const detailThread = ThreadTransformer.transform(result.rows);
 
     return detailThread;
   }
