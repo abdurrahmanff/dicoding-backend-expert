@@ -8,6 +8,7 @@ class GetDetailThreadUseCase {
 
     const { threadId } = useCasePayload;
 
+    await this.threadRepository.verifyThreadExist(threadId);
     const detailThread = this.threadRepository.getDetailThreadById(threadId);
 
     return detailThread;

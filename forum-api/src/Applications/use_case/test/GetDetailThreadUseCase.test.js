@@ -55,6 +55,9 @@ describe('GetDetailThread test', () => {
 
     const mockThreadRepository = new ThreadRepository();
 
+    mockThreadRepository.verifyThreadExist = jest.fn()
+      .mockImplementation(() => Promise.resolve());
+
     mockThreadRepository.getDetailThreadById = jest.fn()
       .mockImplementation(() => Promise.resolve(mockDetailThread));
 
@@ -86,6 +89,7 @@ describe('GetDetailThread test', () => {
       ],
     }));
 
+    expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockThreadRepository.getDetailThreadById).toBeCalledWith(useCasePayload.threadId);
   });
 });

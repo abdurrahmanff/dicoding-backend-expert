@@ -40,8 +40,6 @@ class ThreadRepositoryPostgres extends ThreadRepository {
   }
 
   async getDetailThreadById(id) {
-    await this.verifyThreadExist(id);
-
     const query = {
       text: `SELECT t.id, t.title, t.body, t.date, ut.username AS t_user, c.id AS c_id, uc.username AS c_user, c.date AS c_date, c.content, c.deleted, c.parent AS c_parent
       FROM threads AS t
