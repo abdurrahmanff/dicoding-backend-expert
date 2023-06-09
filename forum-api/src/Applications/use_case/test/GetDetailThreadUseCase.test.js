@@ -2,6 +2,7 @@ const GetDetailThreadUseCase = require('../GetDetailThreadUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const DetailThread = require('../../../Domains/threads/entities/DetailThread');
 const DetailComment = require('../../../Domains/comments/entities/DetailComment');
+const CommentRepository = require('../../../Domains/comments/CommentRepository');
 
 describe('GetDetailThread test', () => {
   it('should throw error when payload did not contain needed properties', async () => {
@@ -37,23 +38,46 @@ describe('GetDetailThread test', () => {
       body: 'sebuah body thread',
       date: '2021-08-08T07:19:09.775Z',
       username: 'dicoding',
-      comments: [
-        new DetailComment({
-          id: 'comment-123',
-          username: 'johndoe',
-          date: '2021-08-08T07:22:33.555Z',
-          content: 'sebuah comment',
-        }),
-        new DetailComment({
-          id: 'comment-126',
-          username: 'dicoding',
-          date: '2021-08-08T07:26:21.338Z',
-          content: '**komentar telah dihapus**',
-        }),
-      ],
+      comments: undefined,
     });
 
+    const mockComments = [
+      new DetailComment({
+        id: 'comment-123',
+        username: 'dicoding',
+        date: '2023-06-07T14:16:49.780Z',
+        content: 'sebuah comment',
+        deleted: false,
+        parent: null,
+      }),
+      new DetailComment({
+        id: 'comment-124',
+        username: 'dicoding',
+        date: '2023-06-07T15:20:49.780Z',
+        content: 'sebuah comment',
+        deleted: false,
+        parent: null,
+      }),
+      new DetailComment({
+        id: 'reply-123',
+        username: 'dicoding',
+        date: '2023-06-07T15:16:49.780Z',
+        content: 'sebuah reply',
+        deleted: true,
+        parent: 'comment-123',
+      }),
+      new DetailComment({
+        id: 'reply-124',
+        username: 'dicoding',
+        date: '2023-06-08T15:16:49.780Z',
+        content: 'sebuah reply',
+        deleted: false,
+        parent: 'comment-123',
+      }),
+    ];
+
     const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
 
     mockThreadRepository.verifyThreadExist = jest.fn()
       .mockImplementation(() => Promise.resolve());
@@ -61,35 +85,57 @@ describe('GetDetailThread test', () => {
     mockThreadRepository.getDetailThreadById = jest.fn()
       .mockImplementation(() => Promise.resolve(mockDetailThread));
 
+    mockCommentRepository.getCommentsByThreadId = jest.fn()
+      .mockImplementation(() => Promise.resolve(mockComments));
+
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
     });
 
-    const detailThread = await getDetailThreadUseCase.execute(useCasePayload);
+    const thread = await getDetailThreadUseCase.execute(useCasePayload);
 
-    expect(detailThread).toStrictEqual(new DetailThread({
+    expect(thread).toStrictEqual(new DetailThread({
       id: useCasePayload.threadId,
       title: 'sebuah thread',
       body: 'sebuah body thread',
       date: '2021-08-08T07:19:09.775Z',
       username: 'dicoding',
       comments: [
-        new DetailComment({
+        {
           id: 'comment-123',
-          username: 'johndoe',
-          date: '2021-08-08T07:22:33.555Z',
-          content: 'sebuah comment',
-        }),
-        new DetailComment({
-          id: 'comment-126',
           username: 'dicoding',
-          date: '2021-08-08T07:26:21.338Z',
-          content: '**komentar telah dihapus**',
-        }),
+          date: '2023-06-07T14:16:49.780Z',
+          content: 'sebuah comment',
+          replies: [
+            {
+              id: 'reply-123',
+              username: 'dicoding',
+              date: '2023-06-07T15:16:49.780Z',
+              content: '**balasan telah dihapus**',
+              replies: [],
+            },
+            {
+              id: 'reply-124',
+              username: 'dicoding',
+              date: '2023-06-08T15:16:49.780Z',
+              content: 'sebuah reply',
+              replies: [],
+            },
+          ],
+        },
+        {
+          id: 'comment-124',
+          username: 'dicoding',
+          date: '2023-06-07T15:20:49.780Z',
+          content: 'sebuah comment',
+          replies: [],
+        },
       ],
     }));
 
     expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockThreadRepository.getDetailThreadById).toBeCalledWith(useCasePayload.threadId);
+    expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCasePayload.threadId);
   });
 });

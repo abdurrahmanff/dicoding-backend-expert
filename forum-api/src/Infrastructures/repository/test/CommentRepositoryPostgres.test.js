@@ -4,6 +4,7 @@ const pool = require('../../database/postgres/pool');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const StoreComment = require('../../../Domains/comments/entities/StoreComment');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const DetailComment = require('../../../Domains/comments/entities/DetailComment');
 
 describe('ComnmentRepository Postgress implementation', () => {
   afterEach(async () => {
@@ -104,6 +105,74 @@ describe('ComnmentRepository Postgress implementation', () => {
       const replyComment = await CommentsTableTestHelper.findCommentById(storeComment.id);
 
       expect(replyComment).toHaveLength(1);
+    });
+  });
+
+  describe('getCommentsByThreadId', () => {
+    it('should return comments from thread', async () => {
+      const threadId = 'thread-123';
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool);
+
+      const date = new Date().toISOString();
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'user A' });
+      await UsersTableTestHelper.addUser({ id: 'user-124', username: 'user B' });
+
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123', userId: 'user-123', date, title: 'judul', body: 'isi thread',
+      });
+
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-123', threadId: 'thread-123', date, userId: 'user-124', content: 'komentar 1',
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-124', threadId: 'thread-123', date, userId: 'user-124', content: 'komentar 2',
+      });
+
+      await CommentsTableTestHelper.addComment({
+        id: 'reply-123', threadId: 'thread-123', date, userId: 'user-123', content: 'reply 1', parent: 'comment-123',
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'reply-124', threadId: 'thread-123', date, userId: 'user-123', content: 'reply 2', parent: 'comment-123',
+      });
+
+      const comments = await commentRepositoryPostgres.getCommentsByThreadId(threadId);
+
+      expect(comments).toStrictEqual([
+        new DetailComment({
+          id: 'comment-123',
+          username: 'user B',
+          date,
+          content: 'komentar 1',
+          deleted: false,
+          parent: null,
+        }),
+        new DetailComment({
+          id: 'comment-124',
+          username: 'user B',
+          date,
+          content: 'komentar 2',
+          deleted: false,
+          parent: null,
+        }),
+        new DetailComment({
+          id: 'reply-123',
+          username: 'user A',
+          date,
+          content: 'reply 1',
+          deleted: false,
+          parent: 'comment-123',
+        }),
+        new DetailComment({
+          id: 'reply-124',
+          username: 'user A',
+          date,
+          content: 'reply 2',
+          deleted: false,
+          parent: 'comment-123',
+        }),
+      ]);
     });
   });
 });

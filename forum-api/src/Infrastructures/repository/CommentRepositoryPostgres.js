@@ -1,6 +1,7 @@
 const CommentRepository = require('../../Domains/comments/CommentRepository');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
+const DetailComment = require('../../Domains/comments/entities/DetailComment');
 
 class CommentRepositoryPostgres extends CommentRepository {
   constructor(pool) {
@@ -73,6 +74,31 @@ class CommentRepositoryPostgres extends CommentRepository {
     const result = await this.pool.query(query);
 
     return result.rows[0];
+  }
+
+  async getCommentsByThreadId(id) {
+    const query = {
+      text: `SELECT c.id, c.content, c.date, c.deleted, c.parent, u.username
+      FROM comments as C
+      JOIN users AS u ON c.user_id = u.id
+      WHERE c.thread_id = $1
+      GROUP BY c.date, c.id, u.username
+      ORDER BY c.date ASC`,
+      values: [id],
+    };
+
+    const result = await this.pool.query(query);
+
+    const comments = result.rows.map((row) => new DetailComment({
+      id: row.id,
+      username: row.username,
+      content: row.content,
+      deleted: row.deleted,
+      date: row.date,
+      parent: row.parent,
+    }));
+
+    return comments;
   }
 }
 

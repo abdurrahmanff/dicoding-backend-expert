@@ -1,6 +1,9 @@
+const ThreadTransformer = require('../transformer/Transformer');
+
 class GetDetailThreadUseCase {
-  constructor({ threadRepository }) {
+  constructor({ threadRepository, commentRepository }) {
     this.threadRepository = threadRepository;
+    this.commentRepository = commentRepository;
   }
 
   async execute(useCasePayload) {
@@ -9,9 +12,12 @@ class GetDetailThreadUseCase {
     const { threadId } = useCasePayload;
 
     await this.threadRepository.verifyThreadExist(threadId);
-    const detailThread = this.threadRepository.getDetailThreadById(threadId);
+    const thread = await this.threadRepository.getDetailThreadById(threadId);
+    const comments = await this.commentRepository.getCommentsByThreadId(threadId);
 
-    return detailThread;
+    thread.comments = ThreadTransformer.buildCommentTree(comments, null);
+
+    return thread;
   }
 
   verifyUseCasePayload(useCasePayload) {

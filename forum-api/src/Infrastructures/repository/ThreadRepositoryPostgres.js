@@ -1,6 +1,6 @@
-const ThreadTransformer = require('../../Applications/transformer/ThreadTransformer');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const ThreadRepository = require('../../Domains/threads/ThreadRepository');
+const DetailThread = require('../../Domains/threads/entities/DetailThread');
 const StoreThread = require('../../Domains/threads/entities/StoreThread');
 
 class ThreadRepositoryPostgres extends ThreadRepository {
@@ -41,20 +41,25 @@ class ThreadRepositoryPostgres extends ThreadRepository {
 
   async getDetailThreadById(id) {
     const query = {
-      text: `SELECT t.id, t.title, t.body, t.date, ut.username AS t_user, c.id AS c_id, uc.username AS c_user, c.date AS c_date, c.content, c.deleted, c.parent AS c_parent
+      text: `SELECT t.id, t.title, t.body, t.date, u.username
       FROM threads AS t
-      JOIN users AS ut ON t.user_id = ut.id
-      LEFT JOIN comments AS c ON t.id = c.thread_id
-      JOIN users AS uc ON c.user_id = uc.id 
+      JOIN users AS u ON t.user_id = u.id
       WHERE t.id = $1
-      GROUP BY c_date, t.id, t_user, c_id, c_user
-      ORDER BY c_date ASC`,
+      GROUP BY t.date, t.id, u.username
+      ORDER BY t.date ASC`,
       values: [id],
     };
 
     const result = await this.pool.query(query);
 
-    const detailThread = ThreadTransformer.transform(result.rows);
+    const detailThread = new DetailThread({
+      id: result.rows[0].id,
+      title: result.rows[0].title,
+      body: result.rows[0].body,
+      date: result.rows[0].date,
+      username: result.rows[0].username,
+      comments: [],
+    });
 
     return detailThread;
   }
