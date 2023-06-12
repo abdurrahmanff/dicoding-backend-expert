@@ -38,7 +38,7 @@ describe('GetDetailThread test', () => {
       body: 'sebuah body thread',
       date: '2021-08-08T07:19:09.775Z',
       username: 'dicoding',
-      comments: undefined,
+      comments: [],
     });
 
     const mockComments = [
