@@ -5,6 +5,8 @@ const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const StoreComment = require('../../../Domains/comments/entities/StoreComment');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const DetailComment = require('../../../Domains/comments/entities/DetailComment');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 
 describe('ComnmentRepository Postgress implementation', () => {
   afterEach(async () => {
@@ -49,7 +51,18 @@ describe('ComnmentRepository Postgress implementation', () => {
 
       await expect(() => commentRepositoryPostgres.verifyCommentExist('comment-133'))
         .rejects
-        .toThrowError('komentar tidak ditemukan');
+        .toThrowError(NotFoundError);
+    });
+
+    it('should not throw error when comment exist', async () => {
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool);
+
+      await expect(commentRepositoryPostgres.verifyCommentExist('comment-123'))
+        .resolves.not.toThrowError(NotFoundError);
     });
   });
 
@@ -63,12 +76,23 @@ describe('ComnmentRepository Postgress implementation', () => {
 
       await expect(() => commentRepositoryPostgres.verifyUserComment('comment-123', 'user-133'))
         .rejects
-        .toThrowError('tidak berhak mengakses komentar');
+        .toThrowError(AuthorizationError);
+    });
+
+    it('should not throw error when user have access to comment', async () => {
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123' });
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool);
+
+      await expect(commentRepositoryPostgres.verifyUserComment('comment-123', 'user-123'))
+        .resolves.not.toThrowError(AuthorizationError);
     });
   });
 
   describe('deleteComment function', () => {
-    it('should throw error when comment not exist', async () => {
+    it('should remove comment from db properly', async () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
       await CommentsTableTestHelper.addComment({ id: 'comment-123' });
