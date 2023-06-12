@@ -11,10 +11,13 @@ class DetailComment {
   }
 
   getContent() {
-    // eslint-disable-next-line no-nested-ternary
-    return this.deleted
-      ? this.parent ? '**balasan telah dihapus**'
-        : '**komentar telah dihapus**' : this.content;
+    if (this.parent && this.deleted) {
+      return '**balasan telah dihapus**';
+    }
+    if (this.deleted) {
+      return '**komentar telah dihapus**';
+    }
+    return this.content;
   }
 }
 
