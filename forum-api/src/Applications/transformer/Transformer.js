@@ -1,7 +1,6 @@
 const Transformer = {
   buildCommentTree(rawComments, parentId) {
     const comments = rawComments.filter((row) => row.parent === parentId);
-    if (comments.length === 0) return [];
 
     return comments.map((comment) => ({
       id: comment.id,
