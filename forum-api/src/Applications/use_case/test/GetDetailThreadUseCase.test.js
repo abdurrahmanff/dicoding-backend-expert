@@ -79,14 +79,9 @@ describe('GetDetailThread test', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
-    mockThreadRepository.verifyThreadExist = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-
-    mockThreadRepository.getDetailThreadById = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockDetailThread));
-
-    mockCommentRepository.getCommentsByThreadId = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockComments));
+    mockThreadRepository.verifyThreadExist = jest.fn(() => Promise.resolve());
+    mockThreadRepository.getDetailThreadById = jest.fn(() => Promise.resolve(mockDetailThread));
+    mockCommentRepository.getCommentsByThreadId = jest.fn(() => Promise.resolve(mockComments));
 
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,

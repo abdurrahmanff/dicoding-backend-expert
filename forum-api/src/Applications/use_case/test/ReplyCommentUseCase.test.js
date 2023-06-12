@@ -45,12 +45,9 @@ describe('ReplyCommentUseCase test', () => {
     const mockCommentRepository = new CommentRepository();
     const mockIdGenerator = () => '123';
 
-    mockThreadRepository.verifyThreadExist = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.verifyCommentExist = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.replyComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockStoredComment));
+    mockThreadRepository.verifyThreadExist = jest.fn(() => Promise.resolve());
+    mockCommentRepository.verifyCommentExist = jest.fn(() => Promise.resolve());
+    mockCommentRepository.replyComment = jest.fn(() => Promise.resolve(mockStoredComment));
 
     const replyCommentUseCase = new ReplyCommentUseCase({
       commentRepository: mockCommentRepository,

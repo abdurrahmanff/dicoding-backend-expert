@@ -42,10 +42,8 @@ describe('AddCommentUseCase test', () => {
     const mockCommentRepository = new CommentRepository();
     const mockIdGenerator = () => '123';
 
-    mockThreadRepository.verifyThreadExist = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.addComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockStoredComment));
+    mockThreadRepository.verifyThreadExist = jest.fn(() => Promise.resolve());
+    mockCommentRepository.addComment = jest.fn(() => Promise.resolve(mockStoredComment));
 
     const addCommentUseCase = new AddCommentUseCase({
       commentRepository: mockCommentRepository,

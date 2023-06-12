@@ -10,12 +10,9 @@ describe('DeleteCommentUseCase test', () => {
 
     const mockCommentRepository = new CommentRepository();
 
-    mockCommentRepository.verifyUserComment = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.verifyCommentExist = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.deleteComment = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+    mockCommentRepository.verifyUserComment = jest.fn(() => Promise.resolve());
+    mockCommentRepository.verifyCommentExist = jest.fn(() => Promise.resolve());
+    mockCommentRepository.deleteComment = jest.fn(() => Promise.resolve());
 
     const deleteCommentUseCase = new DeleteCommentUseCase({
       commentRepository: mockCommentRepository,
