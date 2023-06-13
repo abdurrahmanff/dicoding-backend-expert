@@ -15,13 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: move to app directory
-        run: cd forum-api
       - name: npm install migrate and test
         run: |
+          cd forum-api
           npm install
           npm migrate up
           npm run test
