@@ -12,6 +12,6 @@ describe('StoreLike', () => {
 
     expect(storeLike.id).toEqual(payload.id);
     expect(storeLike.commentId).toEqual(payload.commentId);
-    expect(storeLike.userId).toEqual(payload.owner);
+    expect(storeLike.userId).toEqual(payload.userId);
   });
 });
