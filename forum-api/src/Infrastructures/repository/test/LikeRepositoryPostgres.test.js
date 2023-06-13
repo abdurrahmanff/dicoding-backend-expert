@@ -5,7 +5,6 @@ const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 const pool = require('../../database/postgres/pool');
 const StoreLike = require('../../../Domains/likes/entities/StoreLike');
 const LikeRepositoryPostgres = require('../LikeRepositoryPostgres');
-const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 
 describe('LikeRepository postgres implementation', () => {
   afterEach(async () => {
@@ -19,19 +18,19 @@ describe('LikeRepository postgres implementation', () => {
     await pool.end();
   });
 
-  describe('verifyLikeExist method', () => {
+  describe('verifyLikeNotExist method', () => {
     it('should throw error when comment have been liked', async () => {
       const commentId = 'comment-123';
       const userId = 'user-123';
 
-      UsersTableTestHelper.addUser({ id: 'user-123' });
-      ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
-      CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
-      LikesTableTestHelper.addLike({ commentId: 'comment-123', userId: 'user-123' });
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+      await LikesTableTestHelper.addLike({ commentId: 'comment-123', userId: 'user-123' });
 
-      const likeRepositoryPostgres = new LikeRepositoryPostgres();
+      const likeRepositoryPostgres = new LikeRepositoryPostgres(pool);
 
-      await expect(() => likeRepositoryPostgres.verifyLikeNotExist(commentId, userId))
+      await expect(likeRepositoryPostgres.verifyLikeNotExist(commentId, userId))
         .rejects
         .toThrowError('LIKE_REPOSITORY.COMMENT_HAVE_BEEN_LIKED_BY_USER');
     });
@@ -40,15 +39,15 @@ describe('LikeRepository postgres implementation', () => {
       const commentId = 'comment-223';
       const userId = 'user-123';
 
-      UsersTableTestHelper.addUser({ id: 'user-123' });
-      ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
-      CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
-      CommentsTableTestHelper.addComment({ id: 'comment-223', threadId: 'thread-123', userId: 'user-123' });
-      LikesTableTestHelper.addLike({ commentId: 'comment-123', userId: 'user-123' });
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-223', threadId: 'thread-123', userId: 'user-123' });
+      await LikesTableTestHelper.addLike({ commentId: 'comment-123', userId: 'user-123' });
 
-      const likeRepositoryPostgres = new LikeRepositoryPostgres();
+      const likeRepositoryPostgres = new LikeRepositoryPostgres(pool);
 
-      await expect(() => likeRepositoryPostgres.verifyLikeNotExist(commentId, userId))
+      await expect(likeRepositoryPostgres.verifyLikeNotExist(commentId, userId))
         .resolves.not
         .toThrowError();
     });
@@ -62,15 +61,15 @@ describe('LikeRepository postgres implementation', () => {
         userId: 'user-123',
       });
 
-      UsersTableTestHelper.addUser({ id: 'user-123' });
-      ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
-      CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
 
-      const likeRepositoryPostgres = new LikeRepositoryPostgres();
+      const likeRepositoryPostgres = new LikeRepositoryPostgres(pool);
 
       await likeRepositoryPostgres.addLike(storeLike);
 
-      const like = LikesTableTestHelper.findLikeById(storeLike.id);
+      const like = await LikesTableTestHelper.findLikeById(storeLike.id);
       expect(like).toHaveLength(1);
     });
   });
@@ -80,16 +79,16 @@ describe('LikeRepository postgres implementation', () => {
       const commentId = 'comment-123';
       const userId = 'user-123';
 
-      UsersTableTestHelper.addUser({ id: 'user-123' });
-      ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
-      CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
-      LikesTableTestHelper.addLike({ id: 'like-123', commentId: 'comment-123', userId: 'user-123' });
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+      await LikesTableTestHelper.addLike({ id: 'like-123', commentId: 'comment-123', userId: 'user-123' });
 
-      const likeRepositoryPostgres = new LikeRepositoryPostgres();
+      const likeRepositoryPostgres = new LikeRepositoryPostgres(pool);
 
       await likeRepositoryPostgres.removeLike(commentId, userId);
 
-      const like = LikesTableTestHelper.findLikeById('like-123');
+      const like = await LikesTableTestHelper.findLikeById('like-123');
       expect(like).toHaveLength(0);
     });
   });
