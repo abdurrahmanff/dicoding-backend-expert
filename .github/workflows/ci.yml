@@ -22,7 +22,7 @@ jobs:
         run: |
           cd forum-api
           npm install
-          npm migrate up
+          npm run migrate up
           npm run test
         env:
           CI: true
