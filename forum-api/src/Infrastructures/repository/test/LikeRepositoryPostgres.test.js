@@ -31,9 +31,9 @@ describe('LikeRepository postgres implementation', () => {
 
       const likeRepositoryPostgres = new LikeRepositoryPostgres();
 
-      await expect(() => likeRepositoryPostgres.verifyLikeExist(commentId, userId))
+      await expect(() => likeRepositoryPostgres.verifyLikeNotExist(commentId, userId))
         .rejects
-        .toThrowError(NotFoundError);
+        .toThrowError('LIKE_REPOSITORY.COMMENT_HAVE_BEEN_LIKED_BY_USER');
     });
 
     it("should not throw error when comment haven't been liked", async () => {
@@ -48,9 +48,9 @@ describe('LikeRepository postgres implementation', () => {
 
       const likeRepositoryPostgres = new LikeRepositoryPostgres();
 
-      await expect(() => likeRepositoryPostgres.verifyLikeExist(commentId, userId))
+      await expect(() => likeRepositoryPostgres.verifyLikeNotExist(commentId, userId))
         .resolves.not
-        .toThrowError(NotFoundError);
+        .toThrowError();
     });
   });
 
