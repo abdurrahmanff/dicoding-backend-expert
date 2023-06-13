@@ -116,10 +116,10 @@ class ThreadsHandler {
   async putLikeCommentOnThread(request) {
     const addLikeUseCase = this.container.getInstance(AddLikeUseCase.name);
 
-    const { commentId } = request.params;
+    const { commentId, threadId } = request.params;
     const { id: userId } = request.auth.credentials;
 
-    await addLikeUseCase.execute({ commentId, userId });
+    await addLikeUseCase.execute({ threadId, commentId, userId });
 
     return {
       status: 'success',

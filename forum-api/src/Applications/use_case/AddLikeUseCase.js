@@ -1,13 +1,20 @@
 const StoreLike = require('../../Domains/likes/entities/StoreLike');
 
 class AddLikeUseCase {
-  constructor({ likeRepository, idGenerator }) {
+  constructor({
+    threadRepository, commentRepository, likeRepository, idGenerator,
+  }) {
+    this.threadRepository = threadRepository;
+    this.commentRepository = commentRepository;
     this.likeRepository = likeRepository;
     this.idGenerator = idGenerator;
   }
 
   async execute(useCasePayload) {
-    const { commentId, userId } = useCasePayload;
+    const { threadId, commentId, userId } = useCasePayload;
+
+    await this.threadRepository.verifyThreadExist(threadId);
+    await this.commentRepository.verifyCommentExist(commentId);
     try {
       await this.likeRepository.verifyLikeNotExist(commentId, userId);
 

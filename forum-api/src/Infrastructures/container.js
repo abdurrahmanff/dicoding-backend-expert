@@ -299,6 +299,14 @@ container.register([
           internal: LikeRepository.name,
         },
         {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
+        },
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
           name: 'idGenerator',
           concrete: nanoid,
         },
