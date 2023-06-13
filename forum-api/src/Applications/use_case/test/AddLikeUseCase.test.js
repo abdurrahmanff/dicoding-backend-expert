@@ -3,14 +3,14 @@ const LikeRepository = require('../../../Domains/likes/LikeRepository');
 const StoreLike = require('../../../Domains/likes/entities/StoreLike');
 
 describe('AddLikeUseCase', () => {
-  describe('should orchestrating add like action correctly', async () => {
+  describe('should orchestrating remove like action correctly', async () => {
     const useCasePayload = {
       commentId: 'comment-123',
       userId: 'user-123',
     };
 
     const mockLikeRepository = new LikeRepository();
-    mockLikeRepository.verifyLikeExist = jest.fn(() => Promise.reject());
+    mockLikeRepository.verifyLikeNotExist = jest.fn(() => Promise.reject());
     mockLikeRepository.removeLike = jest.fn(() => Promise.resolve());
 
     const addLikeUseCase = new AddLikeUseCase({
@@ -19,20 +19,20 @@ describe('AddLikeUseCase', () => {
 
     await addLikeUseCase.execute(useCasePayload);
 
-    expect(mockLikeRepository.verifyLikeExist)
+    expect(mockLikeRepository.verifyLikeNotExist)
       .toBeCalledWith(useCasePayload.commentId, useCasePayload.userId);
     expect(mockLikeRepository.removeLike)
       .toBeCalledWith(useCasePayload.commentId, useCasePayload.userId);
   });
 
-  describe('should orchestrating remove like action correctly', async () => {
+  describe('should orchestrating add like action correctly', async () => {
     const useCasePayload = {
       commentId: 'comment-123',
       userId: 'user-123',
     };
 
     const mockLikeRepository = new LikeRepository();
-    mockLikeRepository.verifyLikeExist = jest.fn(() => Promise.resolve());
+    mockLikeRepository.verifyLikeNotExist = jest.fn(() => Promise.resolve());
     mockLikeRepository.addLike = jest.fn(() => Promise.resolve());
     const mockIdGenerator = () => '123';
 
@@ -43,7 +43,7 @@ describe('AddLikeUseCase', () => {
 
     await addLikeUseCase.execute(useCasePayload);
 
-    expect(mockLikeRepository.verifyLikeExist)
+    expect(mockLikeRepository.verifyLikeNotExist)
       .toBeCalledWith(useCasePayload.commentId, useCasePayload.userId);
     expect(mockLikeRepository.addLike)
       .toBeCalledWith(new StoreLike({
