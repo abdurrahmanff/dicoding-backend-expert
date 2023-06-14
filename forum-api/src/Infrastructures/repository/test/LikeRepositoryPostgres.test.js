@@ -92,4 +92,21 @@ describe('LikeRepository postgres implementation', () => {
       expect(like).toHaveLength(0);
     });
   });
+
+  describe('geLikeFromComment method', () => {
+    it('should get like count correctly', async () => {
+      const commentId = 'comment-123';
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', userId: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+      await LikesTableTestHelper.addLike({ id: 'like-123', commentId: 'comment-123', userId: 'user-123' });
+
+      const likeRepositoryPostgres = new LikeRepositoryPostgres(pool);
+
+      const likeCount = await likeRepositoryPostgres.getLikeFromComment(commentId);
+
+      expect(likeCount).toEqual(1);
+    });
+  });
 });
