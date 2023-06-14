@@ -19,6 +19,7 @@ describe('DetailComment test', () => {
     expect(detailComment.content).toEqual(payload.content);
     expect(detailComment.deleted).toEqual(payload.deleted);
     expect(detailComment.parent).toEqual(payload.parent);
+    expect(detailComment.likeCount).toEqual(0);
   });
 
   describe('getContent function', () => {

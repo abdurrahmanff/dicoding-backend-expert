@@ -3,6 +3,7 @@ const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const DetailThread = require('../../../Domains/threads/entities/DetailThread');
 const DetailComment = require('../../../Domains/comments/entities/DetailComment');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
+const LikeRepository = require('../../../Domains/likes/LikeRepository');
 
 describe('GetDetailThread test', () => {
   it('should throw error when payload did not contain needed properties', async () => {
@@ -78,14 +79,17 @@ describe('GetDetailThread test', () => {
 
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
+    const mockLikeRepository = new LikeRepository();
 
     mockThreadRepository.verifyThreadExist = jest.fn(() => Promise.resolve());
     mockThreadRepository.getDetailThreadById = jest.fn(() => Promise.resolve(mockDetailThread));
     mockCommentRepository.getCommentsByThreadId = jest.fn(() => Promise.resolve(mockComments));
+    mockLikeRepository.getLikeFromComment = jest.fn(() => Promise.resolve(5));
 
     const getDetailThreadUseCase = new GetDetailThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
+      likeRepository: mockLikeRepository,
     });
 
     const thread = await getDetailThreadUseCase.execute(useCasePayload);
@@ -102,12 +106,14 @@ describe('GetDetailThread test', () => {
           username: 'dicoding',
           date: '2023-06-07T14:16:49.780Z',
           content: 'sebuah comment',
+          likeCount: 5,
           replies: [
             {
               id: 'reply-123',
               username: 'dicoding',
               date: '2023-06-07T15:16:49.780Z',
               content: '**balasan telah dihapus**',
+              likeCount: 5,
               replies: [],
             },
             {
@@ -115,6 +121,7 @@ describe('GetDetailThread test', () => {
               username: 'dicoding',
               date: '2023-06-08T15:16:49.780Z',
               content: 'sebuah reply',
+              likeCount: 5,
               replies: [],
             },
           ],
@@ -124,6 +131,7 @@ describe('GetDetailThread test', () => {
           username: 'dicoding',
           date: '2023-06-07T15:20:49.780Z',
           content: 'sebuah comment',
+          likeCount: 5,
           replies: [],
         },
       ],
@@ -132,5 +140,6 @@ describe('GetDetailThread test', () => {
     expect(mockThreadRepository.verifyThreadExist).toBeCalledWith(useCasePayload.threadId);
     expect(mockThreadRepository.getDetailThreadById).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCasePayload.threadId);
+    expect(mockLikeRepository.getLikeFromComment).toBeCalledTimes(mockComments.length);
   });
 });
