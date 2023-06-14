@@ -1,9 +1,10 @@
 const ThreadTransformer = require('../transformer/Transformer');
 
 class GetDetailThreadUseCase {
-  constructor({ threadRepository, commentRepository }) {
+  constructor({ threadRepository, commentRepository, likeRepository }) {
     this.threadRepository = threadRepository;
     this.commentRepository = commentRepository;
+    this.likeRepository = likeRepository;
   }
 
   async execute(useCasePayload) {
@@ -14,6 +15,10 @@ class GetDetailThreadUseCase {
     await this.threadRepository.verifyThreadExist(threadId);
     const thread = await this.threadRepository.getDetailThreadById(threadId);
     const comments = await this.commentRepository.getCommentsByThreadId(threadId);
+    for (let i = 0; i < comments.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      comments[i].setLikeCount(await this.likeRepository.getLikeFromComment(comments[i].id));
+    }
 
     thread.comments = ThreadTransformer.buildCommentTree(comments, null);
 

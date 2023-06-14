@@ -1,6 +1,6 @@
 class DetailComment {
   constructor({
-    id, username, date, content, deleted, parent,
+    id, username, date, content, deleted, parent, likeCount = 0,
   }) {
     this.id = id;
     this.username = username;
@@ -8,6 +8,7 @@ class DetailComment {
     this.content = content;
     this.deleted = deleted;
     this.parent = parent;
+    this.likeCount = likeCount;
   }
 
   getContent() {
@@ -18,6 +19,10 @@ class DetailComment {
       return '**komentar telah dihapus**';
     }
     return this.content;
+  }
+
+  setLikeCount(likeCount) {
+    this.likeCount = likeCount;
   }
 }
 

@@ -8,6 +8,7 @@ const Transformer = {
       date: comment.date,
       content: comment.getContent(),
       replies: this.buildCommentTree(rawComments, comment.id),
+      likeCount: comment.likeCount,
     }));
   },
 };
