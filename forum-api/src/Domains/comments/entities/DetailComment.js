@@ -20,6 +20,10 @@ class DetailComment {
     }
     return this.content;
   }
+
+  setLikeCount(likeCount) {
+    this.likeCount = likeCount;
+  }
 }
 
 module.exports = DetailComment;

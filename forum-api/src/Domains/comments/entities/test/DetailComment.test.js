@@ -68,4 +68,23 @@ describe('DetailComment test', () => {
       expect(detailComment.getContent()).toEqual('**balasan telah dihapus**');
     });
   });
+
+  describe('setLikeCount method', () => {
+    it('should set likeCount property properly', () => {
+      const likeCount = 5;
+
+      const detailComment = new DetailComment({
+        id: 'comment-123',
+        username: 'username',
+        date: 'now',
+        content: 'isi komentar',
+        deleted: true,
+        parent: null,
+      });
+
+      detailComment.setLikeCount(likeCount);
+
+      expect(detailComment.likeCount).toEqual(likeCount);
+    });
+  });
 });
