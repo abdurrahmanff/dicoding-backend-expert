@@ -33,11 +33,16 @@ describe('ComnmentRepository Postgress implementation', () => {
 
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool);
 
-      await commentRepositoryPostgres.addComment(storeComment);
+      const comment = await commentRepositoryPostgres.addComment(storeComment);
 
-      const comment = await CommentsTableTestHelper.findCommentById('comment-123');
+      const commentHelper = await CommentsTableTestHelper.findCommentById('comment-123');
 
-      expect(comment).toHaveLength(1);
+      expect(comment).toStrictEqual({
+        id: storeComment.id,
+        content: storeComment.content,
+        owner: storeComment.userId,
+      });
+      expect(commentHelper).toHaveLength(1);
     });
   });
 
