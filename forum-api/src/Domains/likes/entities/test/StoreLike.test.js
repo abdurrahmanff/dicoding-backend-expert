@@ -10,8 +10,8 @@ describe('StoreLike', () => {
 
     const storeLike = new StoreLike(payload);
 
-    expect(storeLike.id).toEqual(payload.id);
-    expect(storeLike.commentId).toEqual(payload.commentId);
-    expect(storeLike.userId).toEqual(payload.userId);
+    expect(storeLike).toStrictEqual(new StoreLike({
+      ...payload,
+    }));
   });
 });

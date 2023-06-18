@@ -13,13 +13,10 @@ describe('DetailComment test', () => {
 
     const detailComment = new DetailComment(payload);
 
-    expect(detailComment.id).toEqual(payload.id);
-    expect(detailComment.username).toEqual(payload.username);
-    expect(detailComment.date).toEqual(payload.date);
-    expect(detailComment.content).toEqual(payload.content);
-    expect(detailComment.deleted).toEqual(payload.deleted);
-    expect(detailComment.parent).toEqual(payload.parent);
-    expect(detailComment.likeCount).toEqual(0);
+    expect(detailComment).toStrictEqual(new DetailComment({
+      ...payload,
+      likeCount: 0,
+    }));
   });
 
   describe('getContent function', () => {

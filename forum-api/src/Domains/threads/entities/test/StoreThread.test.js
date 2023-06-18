@@ -21,9 +21,8 @@ describe('first', () => {
 
     const storeThread = new StoreThread(payload);
 
-    expect(storeThread.id).toEqual(payload.id);
-    expect(storeThread.title).toEqual(payload.title);
-    expect(storeThread.body).toEqual(payload.body);
-    expect(storeThread.owner).toEqual(payload.owner);
+    expect(storeThread).toStrictEqual(new StoreThread({
+      ...payload,
+    }));
   });
 });

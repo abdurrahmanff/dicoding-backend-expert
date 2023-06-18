@@ -26,11 +26,8 @@ describe('DetailThread test', () => {
 
     const detailThread = new DetailThread(payload);
 
-    expect(detailThread.id).toEqual(payload.id);
-    expect(detailThread.title).toEqual(payload.title);
-    expect(detailThread.body).toEqual(payload.body);
-    expect(detailThread.date).toEqual(payload.date);
-    expect(detailThread.username).toEqual(payload.username);
-    expect(detailThread.comments).toStrictEqual(payload.comments);
+    expect(detailThread).toStrictEqual(new DetailThread({
+      ...payload,
+    }));
   });
 });

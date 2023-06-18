@@ -11,9 +11,8 @@ describe('StoreComment test', () => {
 
     const storeComment = new StoreComment(payload);
 
-    expect(storeComment.id).toEqual(payload.id);
-    expect(storeComment.content).toEqual(payload.content);
-    expect(storeComment.threadId).toEqual(payload.threadId);
-    expect(storeComment.userId).toEqual(payload.userId);
+    expect(storeComment).toStrictEqual(new StoreComment({
+      ...payload,
+    }));
   });
 });
